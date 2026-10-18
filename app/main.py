@@ -8,7 +8,8 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 
 from app import __version__
 from app.agent import run_research_graph
@@ -45,6 +46,22 @@ app = FastAPI(
     ),
     lifespan=lifespan,
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    static_file = Path(__file__).parent / "static" / "index.html"
+    if static_file.exists():
+        return FileResponse(static_file)
+    return JSONResponse({"status": "ok", "service": settings.app_name, "version": __version__})
 
 
 @app.get("/health")
