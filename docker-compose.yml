@@ -1,0 +1,72 @@
+# Local infrastructure for the Multi-Agent Enterprise Research and RAG API.
+# Postgres ships with pgvector; Redis is the Celery broker/result backend.
+services:
+  postgres:
+    # ankane/pgvector is the image requested by the architecture spec.
+    # It is a Postgres build with the `vector` extension preinstalled.
+    image: ankane/pgvector:latest
+    container_name: enterprise-rag-postgres
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: enterprise_rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d enterprise_rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: enterprise-rag-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    container_name: enterprise-rag-api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://rag:rag@postgres:5432/enterprise_rag
+      DATABASE_SYNC_URL: postgresql+psycopg://rag:rag@postgres:5432/enterprise_rag
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/uploads:/app/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    container_name: enterprise-rag-worker
+    command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://rag:rag@postgres:5432/enterprise_rag
+      DATABASE_SYNC_URL: postgresql+psycopg://rag:rag@postgres:5432/enterprise_rag
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./data/uploads:/app/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:
