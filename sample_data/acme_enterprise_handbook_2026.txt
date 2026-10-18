@@ -1,0 +1,65 @@
+ACME ENTERPRISE CORP - GLOBAL OPERATIONS & ENGINEERING HANDBOOK (2026)
+Document ID: ACME-POL-2026-V3
+Classification: Internal Enterprise Document
+Effective Date: January 1, 2026
+
+================================================================================
+SECTION 1: WORKPLACE POLICIES & REMOTE OPERATIONS
+================================================================================
+1.1 Remote Work Telework Stipend:
+All active, full-time employees operating in a remote or hybrid arrangement are eligible for a monthly telework stipend of $250 USD. This subsidy is disbursed on the last business day of each calendar month to assist with high-speed fiber internet, electricity expenses, and ergonomic office furniture.
+
+1.2 Core Collaborative Hours:
+To facilitate cross-timezone coordination, all engineering, product, and design personnel must maintain synchronous availability during core collaborative hours from 10:00 AM to 3:00 PM Eastern Standard Time (EST), Monday through Thursday.
+
+1.3 Paid Time Off (PTO) & Leave Entitlement:
+Full-time personnel receive 25 days of annual paid time off (accrued at 2.08 days per completed month of service) in addition to 10 company-wide paid holidays. Unused PTO up to a maximum of 5 days may be carried over into the subsequent calendar year; any excess beyond 5 days is forfeited on December 31.
+
+1.4 Parental Leave:
+Acme Corp provides 16 consecutive weeks of 100% fully paid parental leave to both primary and secondary caregivers following the birth, adoption, or foster placement of a child. This leave must be utilized within the first 12 months of the qualifying event.
+
+================================================================================
+SECTION 2: INFORMATION SECURITY, DATA RETENTION & COMPLIANCE
+================================================================================
+2.1 Data Retention & Archival Schedules:
+- Customer Financial and Transaction Records: Must be stored in write-once-read-many (WORM) storage for a minimum mandatory retention duration of 7 years to comply with SOC2 Type II and financial regulatory mandates.
+- Application Query Logs & Raw Telemetry: Retained in warm analytical storage for 18 months. Automated retention lifecycle triggers purge raw logs at midnight on day 548.
+- Employee Audit Traces: Retained for 3 years following employee separation or account deactivation.
+
+2.2 Encryption Standards:
+All persistent database storage volumes, S3/GCS buckets, and backups must enforce AES-256-GCM encryption at rest. All network communications across public and internal transit layers require TLS 1.3 encryption.
+
+2.3 Authentication & Access Control:
+Passwords must contain at least 16 characters with high entropy. Password-only authentication is prohibited; all enterprise applications require hardware-backed FIDO2 / WebAuthn Multi-Factor Authentication (MFA). Accounts with 5 consecutive failed login attempts are automatically suspended for 60 minutes pending security verification.
+
+2.4 Incident Response Escalation SLAs:
+- Priority 1 (P1 - Critical Outage / Data Breach): Initial acknowledgment and war-room establishment within 15 minutes; executive status updates every 30 minutes.
+- Priority 2 (P2 - Major Degradation): Initial acknowledgment within 1 hour; resolution target within 4 hours.
+- Priority 3 (P3 - Minor Incident): Acknowledgment within 4 business hours.
+
+================================================================================
+SECTION 3: CLOUD INFRASTRUCTURE & PLATFORM ENGINEERING
+================================================================================
+3.1 Primary Cloud Deployments & Regions:
+The default production cloud infrastructure resides in AWS US-East-1 (North Virginia). Hot-standby disaster recovery (DR) is maintained in AWS US-West-2 (Oregon) with a Recovery Point Objective (RPO) of under 60 seconds and a Recovery Time Objective (RTO) of under 5 minutes.
+
+3.2 API Rate Limiting & Throttling:
+The enterprise API gateway enforces strict per-tenant throttling:
+- Standard Tier: 1,200 requests per minute (RPM) per authenticated tenant, with a burst threshold of 1,500 RPM.
+- Enterprise High-Volume Tier: 6,000 requests per minute with a burst threshold of 8,000 RPM.
+- Requests exceeding these limits receive HTTP 429 (Too Many Requests) with a standard Retry-After header.
+
+3.3 Deployment Freeze & Release Windows:
+Production releases are permitted exclusively Monday through Thursday between 9:00 AM and 2:00 PM EST. Deployments on Fridays, weekends, and during the annual year-end freeze (December 15 through January 3) are strictly prohibited unless granted an emergency waiver by the Vice President of Engineering.
+
+================================================================================
+SECTION 4: LEARNING, PROFESSIONAL DEVELOPMENT & HEALTH
+================================================================================
+4.1 Continuing Education & Conference Stipend:
+Each employee is granted an annual professional development budget of $2,000 USD per fiscal year. This allowance covers approved technical conferences, professional certifications (e.g., AWS, GCP, CISA, Kubernetes), and educational textbooks. Reimbursement requests must be submitted through the internal expense portal accompanied by valid proof of completion or receipt.
+
+4.2 Health & Wellness Benefit:
+Employees may claim up to $75 USD per month for gym memberships, fitness studio classes, mental wellness applications, or athletic footwear.
+
+4.3 Equipment Refresh Cycle:
+All engineering workstations (Apple MacBook Pro M-series or Lenovo ThinkPad X1) are scheduled for automatic hardware refresh every 36 months from the date of initial provisioning.
